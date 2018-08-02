@@ -125,6 +125,7 @@ public class ProducerManager {
         }
     }
 
+    //注册producer
     public void registerProducer(final String group, final ClientChannelInfo clientChannelInfo) {
         try {
             ClientChannelInfo clientChannelInfoFound = null;
