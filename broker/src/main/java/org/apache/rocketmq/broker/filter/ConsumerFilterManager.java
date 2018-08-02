@@ -356,6 +356,7 @@ public class ConsumerFilterManager extends ConfigManager {
             long clientVersion) {
             ConsumerFilterData old = this.groupFilterData.get(consumerGroup);
 
+            //没有旧值
             if (old == null) {
                 ConsumerFilterData consumerFilterData = build(topic, consumerGroup, expression, type, clientVersion);
                 if (consumerFilterData == null) {
@@ -364,10 +365,13 @@ public class ConsumerFilterManager extends ConfigManager {
                 consumerFilterData.setBloomFilterData(bloomFilterData);
 
                 old = this.groupFilterData.putIfAbsent(consumerGroup, consumerFilterData);
+                //成功添加
                 if (old == null) {
                     log.info("New consumer filter registered: {}", consumerFilterData);
                     return true;
                 } else {
+                    //成功更新
+                    //TODO 为什么会有更新值
                     if (clientVersion <= old.getClientVersion()) {
                         if (!type.equals(old.getExpressionType()) || !expression.equals(old.getExpression())) {
                             log.warn("Ignore consumer({} : {}) filter(concurrent), because of version {} <= {}, but maybe info changed!old={}:{}, ignored={}:{}",
