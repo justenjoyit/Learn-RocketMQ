@@ -111,6 +111,7 @@ public class NamesrvStartup {
                 System.exit(-3);
             }
 
+            //注册shutdownHookThread，当程序退出时会调用controller.shutdown做退出前的清理工作
             Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(log, new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {

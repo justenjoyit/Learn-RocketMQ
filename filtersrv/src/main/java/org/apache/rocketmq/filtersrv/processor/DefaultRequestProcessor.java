@@ -50,6 +50,9 @@ import org.apache.rocketmq.store.CommitLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 根据上报消息的请求码做不同的处理逻辑
+ */
 public class DefaultRequestProcessor implements NettyRequestProcessor {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.FILTERSRV_LOGGER_NAME);
 

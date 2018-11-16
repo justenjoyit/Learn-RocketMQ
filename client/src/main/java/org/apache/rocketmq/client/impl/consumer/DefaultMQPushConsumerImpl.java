@@ -92,6 +92,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
     private static final long BROKER_SUSPEND_MAX_TIME_MILLIS = 1000 * 15;
     private static final long CONSUMER_TIMEOUT_MILLIS_WHEN_SUSPEND = 1000 * 30;
     private final Logger log = ClientLogger.getLog();
+    //TODO 和DefaultMQPushConsumer相互引用？？？
     private final DefaultMQPushConsumer defaultMQPushConsumer;
     private final RebalanceImpl rebalanceImpl = new RebalancePushImpl(this);
     private final ArrayList<FilterMessageHook> filterMessageHookList = new ArrayList<FilterMessageHook>();
@@ -196,7 +197,18 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
         this.offsetStore = offsetStore;
     }
 
+    /**
+     * 为什么PushConsumer要用pullRequest，因为是用长轮询的方式来达到push的效果。长轮询兼顾pull的优点和Push的实时性
+     * Push方式是Server端接收到消息后，主动把消息推送给Client端，实时性高。
+     * 对于一个提供队列服务的Server来说，用Push方式主动推送有很多弊端:首先是加大Server端的工作量进而影响Server的性能;
+     * 其次Client的处理能力各不相同，Client的状态不受Server控制，如果Client不能及时处理Server推送过来的消息，会造成各种潜在问题
+     *
+     * Pull 方式是Client端循环地从Server端拉取消息，主动权在Client手里，自己拉取到一定量消息后，处理妥当了再接着取。
+     * Pull 方式的问题是循环拉取消息的间隔不好设定，间隔太短就处在一个 “忙等”的状态，浪费资源;每个
+     * Pull 的时间间隔太长 Server 端有消息到来时有可能没有被及时处理。
+     */
     public void pullMessage(final PullRequest pullRequest) {
+
         final ProcessQueue processQueue = pullRequest.getProcessQueue();
         if (processQueue.isDropped()) {
             log.info("the pull request[{}] is dropped.", pullRequest.toString());
@@ -291,6 +303,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                     pullResult = DefaultMQPushConsumerImpl.this.pullAPIWrapper.processPullResult(pullRequest.getMessageQueue(), pullResult,
                         subscriptionData);
 
+                    //根据从broker返回的消息类型做相应的处理
                     switch (pullResult.getPullStatus()) {
                         case FOUND:
                             long prevRequestOffset = pullRequest.getNextOffset();

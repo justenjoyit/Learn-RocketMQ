@@ -67,6 +67,11 @@ public class ClientHousekeepingService implements ChannelEventListener {
 
     }
 
+    /**
+     * 当与name server长连接断掉了之后，会调用这个函数进行清理
+     * @param remoteAddr
+     * @param channel
+     */
     @Override
     public void onChannelClose(String remoteAddr, Channel channel) {
         this.brokerController.getProducerManager().doChannelCloseEvent(remoteAddr, channel);
