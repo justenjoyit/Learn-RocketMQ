@@ -72,6 +72,7 @@ public class NamesrvController {
 
         this.kvConfigManager.load();
 
+        //启动负责通信的服务
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
 
         //默认8个线程

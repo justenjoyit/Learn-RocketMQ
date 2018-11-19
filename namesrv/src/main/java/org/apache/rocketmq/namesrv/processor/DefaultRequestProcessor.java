@@ -53,7 +53,11 @@ import org.apache.rocketmq.remoting.protocol.RemotingCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 网络通信服务受到请求后就调用这个Processor进行处理
+ */
 public class DefaultRequestProcessor implements NettyRequestProcessor {
+
     private static final Logger log = LoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
 
     protected final NamesrvController namesrvController;
@@ -72,6 +76,7 @@ public class DefaultRequestProcessor implements NettyRequestProcessor {
                 request);
         }
 
+        //根据请求的code进行相应处理
         switch (request.getCode()) {
             case RequestCode.PUT_KV_CONFIG:
                 return this.putKVConfig(ctx, request);

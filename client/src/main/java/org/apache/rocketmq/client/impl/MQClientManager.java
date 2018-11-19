@@ -40,6 +40,9 @@ public class MQClientManager {
         return instance;
     }
 
+    /**
+     * 创建MQClient实例
+     */
     public MQClientInstance getAndCreateMQClientInstance(final ClientConfig clientConfig) {
         return getAndCreateMQClientInstance(clientConfig, null);
     }
