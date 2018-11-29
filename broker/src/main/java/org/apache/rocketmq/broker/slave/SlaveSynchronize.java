@@ -45,6 +45,7 @@ public class SlaveSynchronize {
         this.masterAddr = masterAddr;
     }
 
+    //需要同步的信息
     public void syncAll() {
         this.syncTopicConfig();
         this.syncConsumerOffset();
